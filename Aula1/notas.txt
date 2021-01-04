@@ -1,0 +1,35 @@
+Cria um novo usuario e cria uma role de developers
+PowerUserAccess Police 
+AWS tem roles pre definidas para determinadas funcoes, como por exemplo Billing, Administration
+Cria uma role para a ec2 acessar s3
+Cria um grupo de segranca para permitir acesso remoto e transito de dados pela porta 3000 para o node e 22 para o acesso via ssh
+Configura script de inicializacao no metadata da instancia do ec2
+
+#!/bin/bash
+yum -y update
+iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+iptables -A INPUT -p tcp -m tcp --sport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
+
+acesse a maquina:
+ssh -i "backspace-lab.pem" ${id_do_ec2}
+
+rode: 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+. ~/.nvm/nvm.sh
+
+nvm install node
+
+npm install aws-sdk
+
+mover app.js para o servidor
+
+node app.js
+
+pronto, ao acessar url publica:3000  o sistema estara rodando
+
+Criar uma AMI com as configuracoes a partir da imagem que ja existe
+
+é necessario configurar novamente politicas e roles
+ 
